@@ -1,0 +1,50 @@
+<html>
+<head>
+  <style>
+    #ball {
+      background-color: blue;
+      width: 20px;
+      height: 20px;
+      border-radius: 10px;
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+  </style>
+</head>
+<body>
+  <div id="ball"/>
+  <script>
+    const ball = document.getElementById("ball");
+    let pos = [];
+    function getPosition(e){
+      const { clientX, clientY } = e;
+      pos.push({ clientX, clientY });
+    }
+    function tweakPosition(){
+      pos = pos.map(({ clientX, clientY }, i) => {
+        if (i > pos.length - 3) return { clientX, clientY };
+        const lastItem = pos[i-1]
+        if (lastItem) {
+          const lastX = lastItem.clientX;
+          const lastY = lastItem.clientY;
+          clientX = (clientX + lastX) / 2;
+          clientY = (clientY + lastY) / 2;
+        }
+        return { clientX, clientY }
+      })
+    }
+    function usePosition(){
+      tweakPosition();
+      if (pos.length === 0){
+        return;
+      }
+      const { clientX, clientY } = pos.shift();
+      ball.style.left = (clientX - (20 / 2)) +"px";
+      ball.style.top = (clientY - (20 / 2)) +"px";
+      }
+    setInterval(usePosition, 15);
+    window.addEventListener('mousemove', getPosition)
+  </script>
+</body>
+</html>
